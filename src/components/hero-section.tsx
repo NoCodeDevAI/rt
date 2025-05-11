@@ -275,7 +275,7 @@ export const HeroSection = () => {
               transition={{ duration: 4, repeat: Infinity }}
             >
               <Image
-                src="src/assets/hero.png"
+                src="./assets/hero.png"
                 alt="Rahul Tiwari"
                 className="w-full h-full object-cover"
               />
