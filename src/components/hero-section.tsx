@@ -1,93 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, Suspense, lazy } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button, Image } from "@heroui/react";
 import { Icon } from "@iconify/react";
-import { Canvas } from "@react-three/fiber";
 import heroImage from "../assets/hero.png";
 
-import { Float, OrbitControls, Sphere, MeshDistortMaterial } from "@react-three/drei";
-
-// 3D background component with more elements
-const FloatingShapes = () => {
-  return (
-    <>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
-      <Float
-        speed={2.5}
-        rotationIntensity={1}
-        floatIntensity={2}
-      >
-        <mesh position={[-3, 0, -2]}>
-          <octahedronGeometry args={[1.2]} />
-          <meshStandardMaterial color="#1a6af9" wireframe opacity={0.6} transparent />
-        </mesh>
-      </Float>
-      <Float
-        speed={1.8}
-        rotationIntensity={2}
-        floatIntensity={1}
-      >
-        <mesh position={[3, 1, -3]}>
-          <torusGeometry args={[1, 0.3, 16, 32]} />
-          <meshStandardMaterial color="#25a085" wireframe opacity={0.6} transparent />
-        </mesh>
-      </Float>
-      <Float
-        speed={2.2}
-        rotationIntensity={1.5}
-        floatIntensity={1.5}
-      >
-        <mesh position={[0, -2, 0]}>
-          <dodecahedronGeometry args={[1]} />
-          <meshStandardMaterial color="#4f85b3" wireframe opacity={0.6} transparent />
-        </mesh>
-      </Float>
-      
-      {/* Additional 3D elements */}
-      <Float
-        speed={3}
-        rotationIntensity={2}
-        floatIntensity={2}
-      >
-        <mesh position={[-2, 2, -1]}>
-          <tetrahedronGeometry args={[0.8]} />
-          <meshStandardMaterial color="#E4405F" wireframe opacity={0.5} transparent />
-        </mesh>
-      </Float>
-      
-      <Float
-        speed={2}
-        rotationIntensity={1}
-        floatIntensity={1}
-      >
-        <mesh position={[2, -1, -2]}>
-          <icosahedronGeometry args={[0.7]} />
-          <meshStandardMaterial color="#1DA1F2" wireframe opacity={0.5} transparent />
-        </mesh>
-      </Float>
-      
-      {/* Animated sphere with distortion */}
-      <Float
-        speed={1.5}
-        rotationIntensity={0.5}
-        floatIntensity={0.5}
-      >
-        <Sphere visible position={[0, 0, -5]} args={[1, 16, 16]}>
-          <MeshDistortMaterial
-            color="#EA4C89"
-            attach="material"
-            distort={0.5}
-            speed={2}
-            roughness={0.2}
-            opacity={0.6}
-            transparent
-          />
-        </Sphere>
-      </Float>
-    </>
-  );
-};
+// Lazy load Three.js components
+const ThreeJSScene = lazy(() => import("./ThreeJSScene"));
 
 // Social links component
 const SocialLinks = () => {
@@ -129,11 +47,11 @@ const SocialLinks = () => {
   );
 };
 
-// Animated particles background
+// Optimized particles background with reduced particles
 const ParticlesBackground = () => {
   return (
     <div className="absolute inset-0 overflow-hidden z-0">
-      {Array.from({ length: 20 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full bg-primary-200 dark:bg-primary-800"
@@ -173,12 +91,11 @@ export const HeroSection = () => {
       {/* Particles background */}
       <ParticlesBackground />
       
-      {/* 3D background */}
+      {/* 3D background - lazy loaded */}
       <div className="absolute inset-0 opacity-40">
-        <Canvas camera={{ position: [0, 0, 8] }}>
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-          <FloatingShapes />
-        </Canvas>
+        <Suspense fallback={<div className="w-full h-full bg-gradient-to-r from-primary-100/20 to-accent-100/20 dark:from-primary-900/10 dark:to-accent-900/10"></div>}>
+          <ThreeJSScene />
+        </Suspense>
       </div>
       
       {/* Background gradient */}
@@ -280,6 +197,7 @@ export const HeroSection = () => {
                 src={heroImage}
                 alt="Rahul Tiwari"
                 className="w-full h-full object-cover"
+                loading="eager"
               />
             </motion.div>
             
@@ -290,7 +208,7 @@ export const HeroSection = () => {
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             />
             
-            {/* Decorative elements */}
+            {/* Reduced decorative elements */}
             <motion.div
               initial={{ y: 10 }}
               animate={{ y: -10 }}
@@ -307,25 +225,6 @@ export const HeroSection = () => {
               className="absolute -bottom-4 -left-4 bg-primary-500 text-white p-4 rounded-full shadow-lg"
             >
               <Icon icon="lucide:code" className="text-xl" />
-            </motion.div>
-            
-            {/* Additional floating elements */}
-            <motion.div
-              initial={{ x: 10 }}
-              animate={{ x: -10 }}
-              transition={{ repeat: Infinity, repeatType: "reverse", duration: 3, ease: "easeInOut" }}
-              className="absolute -top-8 left-8 bg-blue-500 text-white p-3 rounded-full shadow-lg"
-            >
-              <Icon icon="lucide:figma" className="text-lg" />
-            </motion.div>
-            
-            <motion.div
-              initial={{ x: -10 }}
-              animate={{ x: 10 }}
-              transition={{ repeat: Infinity, repeatType: "reverse", duration: 3.5, ease: "easeInOut" }}
-              className="absolute -bottom-8 right-8 bg-purple-500 text-white p-3 rounded-full shadow-lg"
-            >
-              <Icon icon="lucide:layers" className="text-lg" />
             </motion.div>
           </div>
         </motion.div>
