@@ -3,6 +3,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button, Image } from "@heroui/react";
 import { Icon } from "@iconify/react";
 import { Canvas } from "@react-three/fiber";
+import heroImage from "../assets/hero.png";
+
 import { Float, OrbitControls, Sphere, MeshDistortMaterial } from "@react-three/drei";
 
 // 3D background component with more elements
@@ -275,7 +277,7 @@ export const HeroSection = () => {
               transition={{ duration: 4, repeat: Infinity }}
             >
               <Image
-                src="src/assets/hero.png"
+                src={heroImage}
                 alt="Rahul Tiwari"
                 className="w-full h-full object-cover"
               />
